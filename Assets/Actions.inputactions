@@ -37,6 +37,39 @@
                     "isPartOfComposite": false
                 },
                 {
+                    "name": "1D Axis Keyboard Arrow",
+                    "id": "1cddcbe4-0818-427a-8bdc-b9027c529cd3",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "898dbca2-5284-4208-82c7-9309ba4cbb1a",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "37e75e05-a469-46d2-b335-178b4b92a254",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "negative",
                     "id": "f146d545-d033-40a2-8792-8c0aa093ad6e",
                     "path": "<Keyboard>/a",
@@ -87,39 +120,6 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Basic",
-                    "action": "Movement",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "1D Axis Keyboard Arrow",
-                    "id": "1cddcbe4-0818-427a-8bdc-b9027c529cd3",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Movement",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "898dbca2-5284-4208-82c7-9309ba4cbb1a",
-                    "path": "<Keyboard>/leftArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Movement",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "37e75e05-a469-46d2-b335-178b4b92a254",
-                    "path": "<Keyboard>/rightArrow",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": true

@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Cysharp.Threading.Tasks;
 
 public class CharacterMovement : MonoBehaviour {
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private float _speed;
     [SerializeField] private float _jumpHeight;
     [SerializeField] private float _jumpPeakDuration = 1f;
+    [SerializeField] private float _fallMultiplier = 1f;
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private InputActionAsset _actionAssets;
     private List<GameObject> _groundPoints = new List<GameObject>(3);
@@ -21,18 +23,34 @@ public class CharacterMovement : MonoBehaviour {
         _gameplayActionMap = _actionAssets.FindActionMap("Gameplay");
         _moveAction = _gameplayActionMap.FindAction("Movement");
         _gameplayActionMap.FindAction("Jump").performed += Jump;
+        RefreshJumpSpeed();
+    }
+
+    private void OnValidate() {
+        RefreshJumpSpeed();
+    }
+
+    private void RefreshJumpSpeed() {
         Debug.Assert(_jumpPeakDuration > 0f, "Jump peak duration should be greater than 0");
-        _jumpSpeed = (_jumpHeight - (0.5f * (_rb.gravityScale * Physics2D.gravity.y) * (_jumpPeakDuration * _jumpPeakDuration))) / _jumpPeakDuration;
+        _jumpSpeed = _jumpHeight / _jumpPeakDuration;
     }
 
     private void OnDestroy() {
         _gameplayActionMap.FindAction("Jump").performed -= Jump;
     }
 
-    private void Jump(InputAction.CallbackContext context) {
+    private void Jump(InputAction.CallbackContext context) => Jump();
+    private async void Jump() {
         if (_grounded) {
             _rb.velocity = new Vector2(_rb.velocity.x, _jumpSpeed);
+            _rb.gravityScale = 0f;
+            await UniTask.Delay((int)(_jumpPeakDuration * 1000f));
+            _rb.velocity = new Vector2(_rb.velocity.x, 0f);
+            _rb.gravityScale = _fallMultiplier;
         }
+    }
+
+    private void Update() {
     }
 
     private void FixedUpdate() {
