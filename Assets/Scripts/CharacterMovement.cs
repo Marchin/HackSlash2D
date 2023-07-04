@@ -7,6 +7,7 @@ using Cysharp.Threading.Tasks;
 public class CharacterMovement : MonoBehaviour {
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private float _speed;
+    [SerializeField] private float _slopAngle;
     [SerializeField] private float _jumpHeight;
     [SerializeField] private float _jumpPeakDuration = 1f;
     [SerializeField] private float _fallMultiplier = 1f;
@@ -17,6 +18,7 @@ public class CharacterMovement : MonoBehaviour {
     private InputActionMap _gameplayActionMap;
     private InputAction _moveAction;
     private float _jumpSpeed;
+    private float _minYSlope;
 
     private void Awake() {
         _actionAssets.Enable();
@@ -28,6 +30,7 @@ public class CharacterMovement : MonoBehaviour {
 
     private void OnValidate() {
         RefreshJumpSpeed();
+        _minYSlope = Mathf.Cos(_slopAngle);
     }
 
     private void RefreshJumpSpeed() {
@@ -61,12 +64,21 @@ public class CharacterMovement : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision) {
         if ((1 << collision.gameObject.layer) == _groundLayer.value) {
-            _groundPoints.Add(collision.gameObject);
+            bool fromAbove = false;
+            foreach (var contactPoint in collision.contacts) {
+                if (contactPoint.normal.y >= _minYSlope) {
+                    fromAbove = true;
+                    break;
+                }
+            }
+            if (fromAbove) {
+                _groundPoints.Add(collision.gameObject);
+            }
         }
     }
     
     private void OnCollisionExit2D(Collision2D collision) {
-        if ((1 << collision.gameObject.layer) == _groundLayer.value) {
+        if (_groundPoints.Contains(collision.gameObject)) {
             _groundPoints.Remove(collision.gameObject);
         }
     }
