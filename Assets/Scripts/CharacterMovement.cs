@@ -42,8 +42,7 @@ public class CharacterMovement : MonoBehaviour {
         _gameplayActionMap.FindAction("Jump").performed -= Jump;
     }
 
-    private void Jump(InputAction.CallbackContext context) => Jump();
-    private async void Jump() {
+    private async void Jump(InputAction.CallbackContext context) {
         if (_grounded) {
             _rb.velocity = new Vector2(_rb.velocity.x, _jumpSpeed);
             _rb.gravityScale = 0f;
