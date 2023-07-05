@@ -48,14 +48,13 @@ public class CharacterMovement : MonoBehaviour {
     private async void Jump(InputAction.CallbackContext context) {
         if (_grounded) {
             _rb.velocity = new Vector2(_rb.velocity.x, _jumpSpeed);
-            _rb.gravityScale = 0f;
             await UniTask.Delay((int)(_jumpPeakDuration * 1000f));
             _rb.velocity = new Vector2(_rb.velocity.x, 0f);
-            _rb.gravityScale = _fallMultiplier;
         }
     }
 
     private void Update() {
+        _rb.gravityScale = (_rb.velocity.y > 0.5f) ? 0f : _fallMultiplier;
     }
 
     private void FixedUpdate() {
@@ -63,7 +62,9 @@ public class CharacterMovement : MonoBehaviour {
 
         if (_grounded) {
             _rb.velocity = new Vector2(horizontal * _speed, _rb.velocity.y);
-        } else if (Mathf.Abs(_rb.velocity.x) > _maxAirSpeed) {
+        } else if ((Mathf.Abs(_rb.velocity.x) > _maxAirSpeed) && 
+            (Mathf.Sign(horizontal) == Mathf.Sign(_rb.velocity.x))
+        ) {
             var velocity = _rb.velocity;
             velocity.x -= _airDrag * Mathf.Sign(velocity.x) * Time.fixedDeltaTime;
             if (velocity.x > 0) {
