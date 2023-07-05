@@ -7,6 +7,9 @@ using Cysharp.Threading.Tasks;
 public class CharacterMovement : MonoBehaviour {
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private float _speed;
+    [SerializeField] private float _airDrag;
+    [SerializeField] private float _airAcceleration;
+    [SerializeField] private float _maxAirSpeed;
     [SerializeField] private float _slopAngle;
     [SerializeField] private float _jumpHeight;
     [SerializeField] private float _jumpPeakDuration = 1f;
@@ -58,7 +61,23 @@ public class CharacterMovement : MonoBehaviour {
     private void FixedUpdate() {
         float horizontal = _moveAction.ReadValue<float>();
 
-        _rb.velocity = new Vector2(horizontal * _speed, _rb.velocity.y);
+        if (_grounded) {
+            _rb.velocity = new Vector2(horizontal * _speed, _rb.velocity.y);
+        } else if (Mathf.Abs(_rb.velocity.x) > _maxAirSpeed) {
+            var velocity = _rb.velocity;
+            velocity.x -= _airDrag * Mathf.Sign(velocity.x) * Time.fixedDeltaTime;
+            if (velocity.x > 0) {
+                Mathf.Max(velocity.x, _maxAirSpeed);
+            } else {
+                Mathf.Min(velocity.x, _maxAirSpeed);
+            }
+            _rb.velocity = velocity;
+        } else if (horizontal != 0f) {
+            var velocity = _rb.velocity;
+            velocity.x += _airAcceleration * Mathf.Sign(horizontal) * Time.fixedDeltaTime;
+            velocity.x = Mathf.Clamp(velocity.x, -_maxAirSpeed, _maxAirSpeed);
+            _rb.velocity = velocity;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
